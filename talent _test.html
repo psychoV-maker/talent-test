@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职业天赋自测 - 发现你的潜能</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .progress-container {
+            margin: 25px 0;
+            background: #f0f4f8;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .question-counter {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .question-card {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .question-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .question-number {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        .question-text {
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e1e8ed;
+        }
+        
+        .option:hover {
+            background: #f0f7ff;
+            border-color: #3498db;
+        }
+        
+        .option.selected {
+            background: #e1f0ff;
+            border-color: #3498db;
+            box-shadow: 0 2px 5px rgba(52, 152, 219, 0.2);
+        }
+        
+        .option input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        #submit-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        #submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        #reset-btn {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+        
+        #reset-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-top: 20px;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .talent-type {
+            font-size: 2rem;
+            color: #3498db;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        
+        .secondary-type {
+            font-size: 1.3rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .interpretation {
+            text-align: left;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            line-height: 1.7;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .interpretation h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .interpretation p {
+            margin-bottom: 15px;
+        }
+        
+        .career-recommendation {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .career-recommendation h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .career-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .career-item {
+            background: #e1f0ff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #2980b9;
+        }
+        
+        .score-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .score-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .score-label {
+            width: 120px;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+        
+        .score-bar-container {
+            flex: 1;
+            height: 20px;
+            background: #f0f4f8;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .score-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .score-value {
+            width: 40px;
+            text-align: right;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                border-radius: 12px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .question-card {
+                padding: 15px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .score-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .score-bar-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>职业天赋自测</h1>
+            <p class="description">通过30道选择题，发现你的职业天赋和兴趣方向，获得个性化的职业推荐</p>
+        </header>
+        
+        <div class="question-counter">已完成: <span id="answered-count">0</span>/30 题</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <form id="talent-test">
+            <!-- 问题将通过JavaScript动态生成 -->
+        </form>
+        
+        <div class="buttons">
+            <button type="button" id="submit-btn">提交测试</button>
+            <button type="button" id="reset-btn">重置答案</button>
+        </div>
+        
+        <div class="result-container" id="result-container">
+            <!-- 结果将在这里显示 -->
+        </div>
+        
+        <footer>
+            <p>本测试结果仅供参考，天赋的发展需要持续的学习和实践</p>
+        </footer>
+    </div>
+
+    <script>
+        // 问题和选项数据
+        const questions = [
+            "1. 当你学习新知识时，你更倾向于：",
+            "2. 在解决问题时，你通常会：",
+            "3. 你更喜欢的工作环境是：",
+            "4. 在团队合作中，你的角色通常是：",
+            "5. 面对挑战时，你的第一反应是：",
+            "6. 你更擅长处理：",
+            "7. 在空闲时间，你更喜欢：",
+            "8. 对于细节，你的态度是：",
+            "9. 在沟通中，你更注重：",
+            "10. 你更愿意从事的活动是：",
+            "11. 面对压力时，你通常会：",
+            "12. 你更喜欢的学习方式是：",
+            "13. 在规划项目时，你更注重：",
+            "14. 你更愿意在哪种环境中工作：",
+            "15. 对于创新和改变，你的态度是：",
+            "16. 在完成任务时，你更注重：",
+            "17. 你更擅长的工作内容是：",
+            "18. 面对批评时，你通常会：",
+            "19. 在团队讨论中，你通常是：",
+            "20. 你更愿意从事的行业是：",
+            "21. 对于数据分析，你的能力是：",
+            "22. 在职业生涯中，你更看重：",
+            "23. 面对不确定性时，你通常会：",
+            "24. 你更擅长的工作角色是：",
+            "25. 对于长期目标，你的态度是：",
+            "26. 在项目执行中，你更注重：",
+            "27. 面对失败时，你通常会：",
+            "28. 在职业发展中，你更看重：",
+            "29. 你更愿意从事的工作类型是：",
+            "30. 对于工作与生活的平衡，你的态度是："
+        ];
+
+        // 选项数据（每题3个选项）
+        const options = [
+            ["A. 通过实践和动手操作", "B. 通过阅读和研究理论", "C. 通过与他人讨论和交流"],
+            ["A. 分析各种可能性并制定计划", "B. 凭直觉快速做出判断", "C. 寻求他人的意见和建议"],
+            ["A. 灵活自由，可以自主安排", "B. 结构清晰，有明确的规则", "C. 社交活跃，可以与人互动"],
+            ["A. 提出创意和解决方案", "B. 协调各方关系和沟通", "C. 执行具体任务和细节"],
+            ["A. 兴奋并期待新的机会", "B. 谨慎评估风险和收益", "C. 寻求支持和合作"],
+            ["A. 抽象概念和理论", "B. 人际关系和情感", "C. 具体事务和数据"],
+            ["A. 独自进行创造性活动", "B. 与他人社交和互动", "C. 解决实际问题或学习技能"],
+            ["A. 容易忽略细节，关注大局", "B. 适度关注重要细节", "C. 非常注重每一个细节"],
+            ["A. 内容的准确性和逻辑性", "B. 对方的感受和反应", "C. 信息的完整性和清晰度"],
+            ["A. 艺术创作或设计", "B. 帮助他人或志愿服务", "C. 技术操作或实验"],
+            ["A. 冷静分析情况并制定策略", "B. 寻求他人的支持和建议", "C. 积极应对并寻找解决方案"],
+            ["A. 独立研究和探索", "B. 小组讨论和合作", "C. 实践操作和体验"],
+            ["A. 整体目标和愿景", "B. 人际关系和团队合作", "C. 具体步骤和时间安排"],
+            ["A. 创新和变化快的环境", "B. 稳定和可预测的环境", "C. 专业和技术导向的环境"],
+            ["A. 积极拥抱和推动", "B. 适度接受但保持谨慎", "C. 偏好稳定和熟悉"],
+            ["A. 创意和独特性", "B. 团队合作和满意度", "C. 效率和质量"],
+            ["A. 创意构思和策划", "B. 人际沟通和协调", "C. 技术实施和分析"],
+            ["A. 理性分析并从中学习", "B. 考虑批评者的感受和意图", "C. 关注如何改进和提升"],
+            ["A. 积极发言并提出观点", "B. 倾听他人并促进和谐", "C. 提出具体解决方案"],
+            ["A. 创意和艺术类", "B. 服务和社会工作类", "C. 技术和工程类"],
+            ["A. 较弱，不太擅长", "B. 一般，可以处理", "C. 较强，很擅长"],
+            ["A. 个人成就和自我实现", "B. 社会影响和人际关系", "C. 稳定收入和技术成长"],
+            ["A. 灵活应对并适应变化", "B. 寻求指导和支持", "C. 制定详细的备选方案"],
+            ["A. 创意和策划角色", "B. 协调和沟通角色", "C. 技术和执行角色"],
+            ["A. 有清晰的规划和步骤", "B. 设定方向但保持灵活性", "C. 专注于当前任务"],
+            ["A. 创新和突破", "B. 团队协作和沟通", "C. 流程优化和效率"],
+            ["A. 从中学习并调整策略", "B. 寻求他人的鼓励和支持", "C. 分析原因并改进方法"],
+            ["A. 技能提升和知识积累", "B. 人脉拓展和关系建立", "C. 职位晋升和收入增长"],
+            ["A. 创造性工作", "B. 人际交往工作", "C. 技术性工作"],
+            ["A. 工作优先，可以牺牲个人时间", "B. 寻求工作和生活的平衡", "C. 生活优先，工作为生活服务"]
+        ];
+
+        // 天赋类型和解读（基于霍兰德职业兴趣理论简化版）
+        const talentTypes = {
+            realistic: {
+                name: "现实型 (R型)",
+                description: "你喜欢动手操作、使用工具或机器，偏好具体、实际的任务，通常具有机械能力和体力。你注重实际，喜欢户外活动，偏好与物体打交道而非与人打交道。",
+                strengths: "动手能力强、注重实际、遵守规则、有耐心、身体协调性好",
+                suitableFields: "机械操作、工程技术、农业、体育运动、建筑、制造",
+                careers: ["工程师", "技术人员", "机械师", "运动员", "农民", "建筑师", "电工", "木工", "厨师", "消防员"],
+                developmentSuggestions: "多参与实践活动，培养操作技能，关注技术发展趋势，学习使用新工具和设备"
+            },
+            investigative: {
+                name: "研究型 (I型)",
+                description: "你喜欢观察、学习、分析和解决问题，偏好需要思考和组织理解的工作。你好奇心强，喜欢独立工作，偏好探索未知领域。",
+                strengths: "分析能力强、好奇心重、独立思考、注重精确、逻辑思维好",
+                suitableFields: "科学研究、技术开发、医学、数据分析、学术研究、信息技术",
+                careers: ["科学家", "研究员", "医生", "程序员", "分析师", "工程师", "学者", "药剂师", "数学家", "心理学家"],
+                developmentSuggestions: "培养研究能力，关注前沿知识，参与学术交流，学习数据分析工具"
+            },
+            artistic: {
+                name: "艺术型 (A型)",
+                description: "你喜欢创造性的表达，偏好需要原创性和创造力的工作，避免高度结构化或重复性的任务。你情感丰富，想象力强，喜欢通过艺术形式表达自己。",
+                strengths: "富有想象力、创造力强、情感丰富、独立自主、审美能力强",
+                suitableFields: "艺术创作、设计、写作、表演、音乐、广告、媒体",
+                careers: ["艺术家", "设计师", "作家", "音乐家", "演员", "摄影师", "广告创意", "编辑", "导演", "建筑师"],
+                developmentSuggestions: "多参与创意活动，培养审美能力，勇于表达自我，学习多种艺术形式"
+            },
+            social: {
+                name: "社会型 (S型)",
+                description: "你喜欢帮助、教导或服务他人，偏好需要人际交往能力的工作。你富有同情心，善于沟通，喜欢团队合作，关注他人需求。",
+                strengths: "善于沟通、有同情心、乐于助人、团队合作、耐心倾听",
+                suitableFields: "教育、咨询、医疗、社会工作、人力资源、服务行业",
+                careers: ["教师", "医生", "心理咨询师", "社工", "护士", "人力资源", "销售", "顾问", "教练", "宗教工作者"],
+                developmentSuggestions: "培养沟通技巧，参与志愿服务，学习心理学知识，提高团队协作能力"
+            },
+            enterprising: {
+                name: "企业型 (E型)",
+                description: "你喜欢影响、说服或领导他人，偏好需要领导能力和冒险精神的工作。你精力充沛，有野心，喜欢竞争，善于表达和推销观点。",
+                strengths: "领导力强、有说服力、精力充沛、敢于冒险、决策能力强",
+                suitableFields: "管理、销售、法律、政治、创业、金融、市场营销",
+                careers: ["企业家", "经理", "律师", "销售总监", "政治家", "市场专员", "项目经理", "公关", "房地产经纪", "投资顾问"],
+                developmentSuggestions: "培养领导能力，学习管理知识，勇于承担责任，提高公开演讲技巧"
+            },
+            conventional: {
+                name: "常规型 (C型)",
+                description: "你喜欢有明确规则和结构的工作，偏好需要精确性和组织能力的工作。你注重细节，有条理，可靠，喜欢按计划行事。",
+                strengths: "有条理、注重细节、可靠、遵守规则、组织能力强",
+                suitableFields: "行政、会计、文书、数据处理、金融、物流、质量控制",
+                careers: ["会计", "行政人员", "银行职员", "秘书", "数据分析师", "图书管理员", "审计师", "客服", "档案管理员", "出纳"],
+                developmentSuggestions: "培养组织能力，学习办公软件，注重工作效率，提高时间管理技能"
+            }
+        };
+
+        // 生成测试题目
+        function generateQuestions() {
+            const form = document.getElementById('talent-test');
+            
+            questions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${index+1}`;
+                
+                const questionNumber = document.createElement('div');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `第${index + 1}题`;
+                
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question;
+                
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options';
+                
+                options[index].forEach((option, optionIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `q${index + 1}`;
+                    input.value = String.fromCharCode(65 + optionIndex); // A, B, C
+                    input.id = `q${index + 1}${String.fromCharCode(65 + optionIndex)}`;
+                    
+                    const label = document.createElement('label');
+                    label.htmlFor = `q${index + 1}${String.fromCharCode(65 + optionIndex)}`;
+                    label.textContent = option;
+                    
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    
+                    // 添加点击选择功能
+                    optionDiv.addEventListener('click', function() {
+                        // 清除同一问题的其他选项
+                        const optionsInSameQuestion = optionsContainer.querySelectorAll('.option');
+                        optionsInSameQuestion.forEach(opt => opt.classList.remove('selected'));
+                        
+                        // 选中当前选项
+                        optionDiv.classList.add('selected');
+                        input.checked = true;
+                        
+                        // 更新进度
+                        updateProgress();
+                    });
+                    
+                    optionsContainer.appendChild(optionDiv);
+                });
+                
+                questionCard.appendChild(questionNumber);
+                questionCard.appendChild(questionText);
+                questionCard.appendChild(optionsContainer);
+                
+                form.appendChild(questionCard);
+            });
+        }
+
+        // 更新进度条
+        function updateProgress() {
+            const totalQuestions = 30;
+            let answeredCount = 0;
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedOption) {
+                    answeredCount++;
+                }
+            }
+            
+            document.getElementById('answered-count').textContent = answeredCount;
+            const progressPercent = (answeredCount / totalQuestions) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+        }
+
+        // 计算测试结果（基于霍兰德职业兴趣理论）
+        function calculateResult() {
+            // 霍兰德六种兴趣类型计数
+            let rCount = 0; // 现实型
+            let iCount = 0; // 研究型
+            let aCount = 0; // 艺术型
+            let sCount = 0; // 社会型
+            let eCount = 0; // 企业型
+            let cCount = 0; // 常规型
+            
+            // 统计每个选项的选择次数
+            // 这里简化处理，实际应根据专业量表设计更精确的计分规则
+            for (let i = 1; i <= 30; i++) {
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedOption) {
+                    // 根据题目和选项分配分数到不同兴趣类型
+                    // 这是简化版本，实际应用需要更精确的计分系统
+                    if (i <= 5) {
+                        if (selectedOption.value === 'A') rCount += 2;
+                        if (selectedOption.value === 'B') iCount += 1;
+                        if (selectedOption.value === 'C') sCount += 1;
+                    } else if (i <= 10) {
+                        if (selectedOption.value === 'A') aCount += 2;
+                        if (selectedOption.value === 'B') sCount += 1;
+                        if (selectedOption.value === 'C') eCount += 1;
+                    } else if (i <= 15) {
+                        if (selectedOption.value === 'A') eCount += 2;
+                        if (selectedOption.value === 'B') cCount += 1;
+                        if (selectedOption.value === 'C') rCount += 1;
+                    } else if (i <= 20) {
+                        if (selectedOption.value === 'A') aCount += 2;
+                        if (selectedOption.value === 'B') sCount += 1;
+                        if (selectedOption.value === 'C') rCount += 1;
+                    } else if (i <= 25) {
+                        if (selectedOption.value === 'A') iCount += 2;
+                        if (selectedOption.value === 'B') sCount += 1;
+                        if (selectedOption.value === 'C') eCount += 1;
+                    } else {
+                        if (selectedOption.value === 'A') eCount += 2;
+                        if (selectedOption.value === 'B') sCount += 1;
+                        if (selectedOption.value === 'C') aCount += 1;
+                    }
+                }
+            }
+            
+            // 确定主要天赋类型（得分最高的）
+            const scores = {
+                realistic: rCount,
+                investigative: iCount,
+                artistic: aCount,
+                social: sCount,
+                enterprising: eCount,
+                conventional: cCount
+            };
+            
+            // 找到得分最高的类型
+            let maxScore = 0;
+            let primaryType = 'realistic';
+            
+            for (const type in scores) {
+                if (scores[type] > maxScore) {
+                    maxScore = scores[type];
+                    primaryType = type;
+                }
+            }
+            
+            // 找到得分第二高的类型（次要类型）
+            let secondaryScore = 0;
+            let secondaryType = 'investigative';
+            
+            for (const type in scores) {
+                if (type !== primaryType && scores[type] > secondaryScore) {
+                    secondaryScore = scores[type];
+                    secondaryType = type;
+                }
+            }
+            
+            return {
+                primary: primaryType,
+                secondary: secondaryType,
+                scores: scores
+            };
+        }
+
+        // 显示结果
+        function showResult() {
+            const result = calculateResult();
+            const resultContainer = document.getElementById('result-container');
+            const primaryTalent = talentTypes[result.primary];
+            const secondaryTalent = talentTypes[result.secondary];
+            
+            // 找到最高分用于计算百分比
+            const maxScore = Math.max(...Object.values(result.scores));
+            
+            resultContainer.innerHTML = `
+                <h2 class="result-title">你的职业天赋方向</h2>
+                <div class="talent-type">${primaryTalent.name}</div>
+                <div class="secondary-type">次要类型: ${secondaryTalent.name}</div>
+                
+                <div class="score-breakdown">
+                    ${Object.entries(result.scores).map(([type, score]) => {
+                        const percentage = Math.round((score / maxScore) * 100);
+                        const barColors = {
+                            realistic: '#e74c3c',
+                            investigative: '#3498db',
+                            artistic: '#9b59b6',
+                            social: '#2ecc71',
+                            enterprising: '#f39c12',
+                            conventional: '#34495e'
+                        };
+                        
+                        return `
+                            <div class="score-item">
+                                <div class="score-label">${talentTypes[type].name}</div>
+                                <div class="score-bar-container">
+                                    <div class="score-bar" style="width: ${percentage}%; background: ${barColors[type]}"></div>
+                                </div>
+                                <div class="score-value">${score}</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                
+                <div class="interpretation">
+                    <h3>天赋解读</h3>
+                    <p>${primaryTalent.description}</p>
+                    
+                    <h3>你的优势</h3>
+                    <p>${primaryTalent.strengths}</p>
+                    
+                    <h3>适合领域</h3>
+                    <p>${primaryTalent.suitableFields}</p>
+                    
+                    <h3>发展建议</h3>
+                    <p>${primaryTalent.developmentSuggestions}</p>
+                </div>
+                
+                <div class="career-recommendation">
+                    <h3>职业方向推荐</h3>
+                    <p>基于你的天赋兴趣，以下职业可能适合你：</p>
+                    <div class="career-list">
+                        ${primaryTalent.careers.map(career => `<div class="career-item">${career}</div>`).join('')}
+                    </div>
+                    <p style="margin-top: 15px;">结合你的次要类型(${secondaryTalent.name})，你也可以考虑以下交叉领域：</p>
+                    <div class="career-list">
+                        ${secondaryTalent.careers.slice(0, 4).map(career => `<div class="career-item">${career}</div>`).join('')}
+                    </div>
+                </div>
+            `;
+            
+            resultContainer.style.display = 'block';
+            
+            // 滚动到结果区域
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 重置测试
+        function resetTest() {
+            // 清除所有选择
+            const allInputs = document.querySelectorAll('input[type="radio"]');
+            allInputs.forEach(input => {
+                input.checked = false;
+            });
+            
+            // 清除选项的高亮
+            const allOptions = document.querySelectorAll('.option');
+            allOptions.forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // 隐藏结果
+            document.getElementById('result-container').style.display = 'none';
+            
+            // 重置进度
+            updateProgress();
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            generateQuestions();
+            
+            // 添加提交按钮事件
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                // 检查是否所有问题都已回答
+                const unanswered = [];
+                for (let i = 1; i <= 30; i++) {
+                    const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                    if (!selectedOption) {
+                        unanswered.push(i);
+                    }
+                }
+                
+                if (unanswered.length > 0) {
+                    alert(`您还有${unanswered.length}道题未回答，请完成所有题目后再提交。`);
+                    // 滚动到第一个未回答的问题
+                    document.getElementById(`question-${unanswered[0]}`).scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showResult();
+                }
+            });
+            
+            // 添加重置按钮事件
+            document.getElementById('reset-btn').addEventListener('click', resetTest);
+        });
+    </script>
+</body>
+</html>
